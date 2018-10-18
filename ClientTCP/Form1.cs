@@ -16,6 +16,7 @@ namespace ClientTCP
     {
         static int port = 4001;
         static string address = "192.168.1.105"; // адрес сервера
+        
         public Form1()
         {
             InitializeComponent();
@@ -30,6 +31,7 @@ namespace ClientTCP
             try
             {
                 IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse(address), port);
+                //IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Any, port);
 
                 Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Connect(iPEndPoint);
@@ -40,7 +42,7 @@ namespace ClientTCP
 
                 socket.Send(data);
 
-                data = new byte[256];
+                data = new byte[1024];
                 StringBuilder stringBuilder = new StringBuilder();
 
                 int bytes = 0;
@@ -49,11 +51,11 @@ namespace ClientTCP
                 {
                     bytes = socket.Receive(data, data.Length, 0);
                     stringBuilder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                    listBox1.Items.Add(stringBuilder.ToString());
+                    //listBox1.Items.Add(stringBuilder.ToString());
                 }
                 while (socket.Available > 0);
 
-                //listBox1.Items.Add(stringBuilder.ToString());
+                 listBox1.Items.Add(stringBuilder.ToString());
 
                 // закрываем сокет
                 socket.Shutdown(SocketShutdown.Both);
