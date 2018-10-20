@@ -28,12 +28,12 @@ namespace ClientTCP
 
         private void Connect()
         {
+            IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse(address), port);
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
             try
             {
-                IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse(address), port);
-                //IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Any, port);
 
-                Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Connect(iPEndPoint);
 
                 string message = comboBox1.SelectedItem.ToString();
@@ -49,22 +49,27 @@ namespace ClientTCP
 
                 do
                 {
+                    stringBuilder = new StringBuilder();
                     bytes = socket.Receive(data, data.Length, 0);
                     stringBuilder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                    //listBox1.Items.Add(stringBuilder.ToString());
+
+                    listBox1.Items.Add(stringBuilder.ToString());
                 }
                 while (socket.Available > 0);
 
-                 listBox1.Items.Add(stringBuilder.ToString());
-
-                // закрываем сокет
-                socket.Shutdown(SocketShutdown.Both);
-                socket.Close();
+                // listBox1.Items.Add(stringBuilder.ToString());
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+
+            finally
+                {
+                // закрываем сокет
+                socket.Shutdown(SocketShutdown.Both);
+                socket.Close();
             }
         }
 
